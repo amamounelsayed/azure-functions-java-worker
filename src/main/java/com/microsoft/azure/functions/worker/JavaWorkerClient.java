@@ -1,5 +1,7 @@
 package com.microsoft.azure.functions.worker;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.*;
@@ -86,11 +88,17 @@ public class JavaWorkerClient implements AutoCloseable {
          */
         @Override
         public void onNext(StreamingMessage message) {
+            DateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
+            Date date = new Date();
+            WorkerLogManager.getSystemLogger().log(Level.SEVERE, "Opaaa 2 worker start: " + message.getInvocationRequest().getInvocationId() + ": " + sdf.format(date));
+
             MessageHandler<?, ?> handler = JavaWorkerClient.this.handlerSuppliers.get(message.getContentCase()).get();
             handler.setRequest(message);
             this.threadpool.submit(() -> {
                 handler.handle();
                 this.send(message.getRequestId(), handler);
+                Date date2 = new Date();
+                WorkerLogManager.getSystemLogger().log(Level.SEVERE, "Opaaa 3 worker start: " + message.getInvocationRequest().getInvocationId() + ": " + sdf.format(date2));
             });
         }
 
