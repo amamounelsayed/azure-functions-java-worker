@@ -39,7 +39,7 @@ public class WorkerLogManager {
     }
 
     private Logger getInvocationLoggerImpl(String invocationId) {
-        Logger logger = Logger.getAnonymousLogger();
+        Logger logger = Logger.getGlobal();
         logger.setLevel(Level.ALL);
         addHostClientHandlers(logger, invocationId);
         return logger;
