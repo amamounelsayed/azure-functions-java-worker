@@ -121,6 +121,9 @@ public final class Application implements IApplication {
             System.exit(1);
         } else {
             try (JavaWorkerClient client = new JavaWorkerClient(app)) {
+                FunctionRpcGrpcServer server = new FunctionRpcGrpcServer(49150, app.getRequestId());
+                server.start();
+
                 client.listen(app.getWorkerId(), app.getRequestId()).get();
             } catch (Exception ex) {
                 WorkerLogManager.getSystemLogger().log(Level.SEVERE, ExceptionUtils.getRootCauseMessage(ex), ex);
