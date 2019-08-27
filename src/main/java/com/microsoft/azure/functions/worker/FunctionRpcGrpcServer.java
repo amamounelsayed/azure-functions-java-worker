@@ -5,6 +5,10 @@ import com.microsoft.azure.functions.rpc.messages.StreamingMessage;
 import com.microsoft.azure.functions.worker.handler.*;
 import io.grpc.stub.StreamObserver;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.logging.Level;
 
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
@@ -69,12 +73,19 @@ public class FunctionRpcGrpcServer {
             return new StreamObserver<StreamingMessage>() {
                 @Override
                 public void onNext(StreamingMessage message) {
+                    DateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
+                    Date date = new Date();
+                    WorkerLogManager.getSystemLogger().log(Level.SEVERE, "Opaaa 3:" + message.getInvocationRequest().getInvocationId() + ":" + sdf.format(date));
+
                     MessageHandler<?, ?> handler = Something.handlerSuppliers.get(message.getContentCase()).get();
                     handler.setRequest(message);
                     handler.handle();
                     StreamingMessage.Builder messageBuilder = StreamingMessage.newBuilder();
                     handler.marshalResponse(messageBuilder);
                     responseObserver.onNext(messageBuilder.build());
+                    Date date2 = new Date();
+                    WorkerLogManager.getSystemLogger().log(Level.SEVERE, "Opaaa 4:" + message.getInvocationRequest().getInvocationId() + ":" + sdf.format(date2));
+                    responseObserver.onCompleted();
                 }
 
                 @Override

@@ -90,7 +90,7 @@ public class JavaWorkerClient implements AutoCloseable {
         public void onNext(StreamingMessage message) {
             DateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
             Date date = new Date();
-            WorkerLogManager.getSystemLogger().log(Level.SEVERE, "Opaaa 3:" + message.getInvocationRequest().getInvocationId() + ":" + sdf.format(date));
+            WorkerLogManager.getSystemLogger().log(Level.SEVERE, "Opaaa 39:" + message.getInvocationRequest().getInvocationId() + ":" + sdf.format(date));
 
             MessageHandler<?, ?> handler = JavaWorkerClient.this.handlerSuppliers.get(message.getContentCase()).get();
             handler.setRequest(message);
@@ -98,7 +98,7 @@ public class JavaWorkerClient implements AutoCloseable {
                 handler.handle();
                 this.send(message.getRequestId(), handler);
                 Date date2 = new Date();
-                WorkerLogManager.getSystemLogger().log(Level.SEVERE, "Opaaa 4:" + message.getInvocationRequest().getInvocationId() + ":" + sdf.format(date2));
+                WorkerLogManager.getSystemLogger().log(Level.SEVERE, "Opaaa 49:" + message.getInvocationRequest().getInvocationId() + ":" + sdf.format(date2));
             });
         }
 
