@@ -16,6 +16,7 @@ public class WorkerInitRequestHandler extends MessageHandler<WorkerInitRequest, 
         response.setWorkerVersion(Application.version());
         response.putCapabilities("TypedDataCollection", "TypedDataCollection");
         response.putCapabilities("WorkerStatus", "WorkerStatus");
+        response.putCapabilities("RpcHttpBodyOnly", "RpcHttpBodyOnly");
         return "Worker initialized";
     }
 }

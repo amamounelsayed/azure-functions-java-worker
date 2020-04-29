@@ -8,6 +8,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.microsoft.azure.functions.ExecutionContext;
 import com.microsoft.azure.functions.rpc.messages.ParameterBinding;
 import com.microsoft.azure.functions.rpc.messages.TypedData;
@@ -61,6 +65,22 @@ public final class BindingDataStore {
     
     public Optional<BindingData> getDataByType(Type target) {
     	return this.otherSources.get(ExecutionContext.class).computeByType(target);        
+    }
+
+    static DataSource<?> deriveHttpBody(TypedData data, Map<String, String> headerMap) {
+        String contentType = headerMap.get("content-type");
+        if(headerMap.get("content-type") != null && contentType.equals("application/json")) {
+            JsonElement jsonObject;
+            try {
+                JsonParser gsonParser = new JsonParser();
+                jsonObject = gsonParser.parse(data.getJson());
+            }
+            catch(Exception ex) {
+                return BindingDataStore.rpcSourceFromTypedData(null, data);
+            }
+            return new RpcJsonDataSource(null, jsonObject.toString());
+        }
+        return BindingDataStore.rpcSourceFromTypedData(null, data);
     }
 
     static DataSource<?> rpcSourceFromTypedData(String name, TypedData data) {
