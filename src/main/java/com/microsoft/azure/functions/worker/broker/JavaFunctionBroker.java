@@ -57,7 +57,8 @@ public class JavaFunctionBroker {
 		return Optional.ofNullable(this.methods.get(id)).map(entry -> entry.left);
 	}
 
-	Map<String, TypedData> getTriggerMetadataMap(InvocationRequest request) {
+	// TODO the scope should be package private for testability. Modify the package name as same as main package
+	public Map<String, TypedData> getTriggerMetadataMap(InvocationRequest request) {
 		String    name ="";
 		TypedData dataWithHttp = null;
 		for(ParameterBinding e: request.getInputDataList()) {
