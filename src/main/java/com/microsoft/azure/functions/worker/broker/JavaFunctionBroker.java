@@ -7,6 +7,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.microsoft.azure.functions.rpc.messages.*;
+import com.microsoft.azure.functions.worker.Constants;
 import com.microsoft.azure.functions.worker.binding.BindingDataStore;
 import com.microsoft.azure.functions.worker.description.FunctionMethodDescriptor;
 import com.microsoft.azure.functions.worker.reflect.ClassLoaderProvider;
@@ -73,7 +74,7 @@ public class JavaFunctionBroker {
 		if (!name.isEmpty() && !triggerMetadata.containsKey(name)) {
 			triggerMetadata.put(name, dataWithHttp);
 		}
-		String requestKey = "$request";
+		String requestKey = Constants.TRIGGER_METADATA_DOLLAR_REQUEST_KEY;
 		if (dataWithHttp != null & !triggerMetadata.containsKey(requestKey)) {
 			triggerMetadata.put(requestKey, dataWithHttp);
 		}
