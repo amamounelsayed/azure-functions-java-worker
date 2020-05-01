@@ -53,4 +53,56 @@ public class JavaFunctionBrokerTest {
         TypedData actual2 = actualTriggerMetadata.get(expectedName);
         assertEquals(actual2.getString(), expectedData);
     }
+
+    @Test
+    public void getTriggerMetadataMap_ignored(
+            @Mocked InvocationRequest request,
+            @Mocked ParameterBinding binding,
+            @Mocked TypedData bindingData,
+            @Mocked TypedData queueTrigger,
+            @Mocked TypedData dequeueCount,
+            @Mocked TypedData expirationTime,
+            @Mocked TypedData id,
+            @Mocked TypedData insertionTime,
+            @Mocked TypedData nextVisibleTime,
+            @Mocked TypedData popReceipt,
+            @Mocked TypedData sys
+    ) throws Exception {
+
+        String data = "string: \"hello queue\"\n";
+        String name = "msg";
+        new Expectations() {{
+            bindingData.hasHttp(); result = false;
+            bindingData.getString(); result = data; minTimes = 0;
+            binding.getName(); result = name; minTimes = 0;
+            binding.getData(); result = bindingData; minTimes = 0;
+            request.getInputDataList(); result = Arrays.asList(binding);
+
+            queueTrigger.getString(); result = "string: \"hello queue\"\n"; minTimes = 0;
+            dequeueCount.getString(); result = "json: \"1\"\n"; minTimes = 0;
+            expirationTime.getString(); result = "json: \"\"2020-05-08T17:47:22+00:00\"\n"; minTimes = 0;
+            id.getString(); result = "string: \"e4f4a332-df80-41a1-8ecd-c2f7fba91f28\"\n"; minTimes = 0;
+            insertionTime.getString(); result = "json: \"\"2020-05-01T17:47:22+00:00\"\n"; minTimes = 0;
+            nextVisibleTime.getString(); result = "json: \"\"2020-05-01T17:57:22+00:00\"\n"; minTimes = 0;
+            popReceipt.getString(); result = "string: \"oJCJGfnt1wgBAAAA\"\n"; minTimes = 0;
+            sys.getString(); result =  "json: \"{\"MethodName\":\"QueueProcessor\",\"UtcNow\":\"2020-05-01T17:47:29.2664174Z\",\"RandGuid\":\"7f67ac1c-b7b0-43f5-a51a-73af321d7d9f\"}\n"; minTimes = 0;
+
+            Map<String,TypedData> triggerMetadata = new HashMap<String, TypedData>();
+            triggerMetadata.put("QueueTrigger", queueTrigger);
+            triggerMetadata.put("DequeueCount", dequeueCount);
+            triggerMetadata.put("ExpirationTime", expirationTime);
+            triggerMetadata.put("Id", id);
+            triggerMetadata.put("InsertionTime", insertionTime);
+            triggerMetadata.put("NextVisibleTime", nextVisibleTime);
+            triggerMetadata.put("PopReceipt", popReceipt);
+            triggerMetadata.put("sys", sys);
+            request.getTriggerMetadataMap(); result = Collections.unmodifiableMap(triggerMetadata);
+        }};
+
+        int expectedCount = request.getTriggerMetadataMap().size();
+        JavaFunctionBroker broker = new JavaFunctionBroker(new DefaultClassLoaderProvider());
+        Map<String, TypedData> actualTriggerMetadata = broker.getTriggerMetadataMap(request);
+        // In case of non-http request, it will not modify the triggerMetadata
+        assertEquals(expectedCount, actualTriggerMetadata.size());
+    }
 }
