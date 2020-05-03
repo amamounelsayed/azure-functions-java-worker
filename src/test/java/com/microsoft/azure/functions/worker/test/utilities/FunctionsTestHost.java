@@ -65,7 +65,7 @@ public final class FunctionsTestHost implements AutoCloseable, IApplication {
     @Override
     public String getHost() { return "localhost"; }
     @Override
-    public int getPort() { return 5005; }
+    public int getPort() { return 55005; }
     @Override
     public Integer getMaxMessageSize() { return null; }
 

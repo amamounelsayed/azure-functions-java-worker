@@ -14,14 +14,14 @@ import org.apache.commons.lang3.reflect.TypeUtils;
  * conversion. Data operation template: T (source) -> Object (value).
  * Thread-safety: Single thread.
  */
-abstract class DataSource<T> {
+public abstract class DataSource<T> {
 	DataSource(String name, T value, DataOperations<T, Object> operations) {
 		this.name = name;
 		this.value = value;
 		this.operations = operations;
 	}
 
-	T getValue() {
+	public T getValue() {
 		return this.value;
 	}
 
