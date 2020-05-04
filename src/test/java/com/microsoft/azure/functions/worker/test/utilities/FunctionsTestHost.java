@@ -24,7 +24,12 @@ public final class FunctionsTestHost implements AutoCloseable, IApplication {
 
     @PostConstruct
     private void initializeServer() throws IOException {
-        ServerBuilder<?> builder = ServerBuilder.forPort(this.getPort());
+        ServerBuilder<?> builder;
+        try {
+            builder = ServerBuilder.forPort(this.getPort());
+        } catch (Exception ex) {
+            builder = ServerBuilder.forPort(this.getPort());
+        }
         this.grpcHost = new HostGrpcImplementation();
         this.server = builder.addService(this.grpcHost).build();
         this.server.start();
@@ -65,7 +70,13 @@ public final class FunctionsTestHost implements AutoCloseable, IApplication {
     @Override
     public String getHost() { return "localhost"; }
     @Override
-    public int getPort() { return 55005; }
+    public int getPort() {
+        List list = new ArrayList();
+        list.add(5005);
+        list.add(55005);
+        Random rand = new Random();
+        return (int) list.get(rand.nextInt(list.size()));
+    }
     @Override
     public Integer getMaxMessageSize() { return null; }
 
