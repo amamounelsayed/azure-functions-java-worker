@@ -67,22 +67,6 @@ public final class BindingDataStore {
     	return this.otherSources.get(ExecutionContext.class).computeByType(target);        
     }
 
-    static DataSource<?> deriveHttpBody(TypedData data, Map<String, String> headerMap) {
-        String contentType = headerMap.get("content-type");
-        if(headerMap.get("content-type") != null && contentType.equals("application/json")) {
-            JsonElement jsonObject;
-            try {
-                JsonParser gsonParser = new JsonParser();
-                jsonObject = gsonParser.parse(data.getJson());
-            }
-            catch(Exception ex) {
-                return BindingDataStore.rpcSourceFromTypedData(null, data);
-            }
-            return new RpcJsonDataSource(null, jsonObject.toString());
-        }
-        return BindingDataStore.rpcSourceFromTypedData(null, data);
-    }
-
     static DataSource<?> rpcSourceFromTypedData(String name, TypedData data) {
         switch (data.getDataCase()) {
             case INT:    return new RpcIntegerDataSource(name, data.getInt());
